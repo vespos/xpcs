@@ -4,6 +4,15 @@ from scipy.special import gamma, factorial, gammaln
 from lmfit import Model
 
 
+def contrast(im):
+    return np.mean(im**2)/np.mean(im)**2 - 1
+
+
+def RMScontrast(im):
+    ave = np.mean(im)
+    return np.sqrt(np.mean(((im-ave)/ave)**2))
+
+
 def get_pk(imgs_roi, adu_1ph, nphot=8, sizeBin=1):
     """ Get the photon probabilities in a stack of imgs 
     

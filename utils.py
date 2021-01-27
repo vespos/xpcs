@@ -80,3 +80,10 @@ def box_to_roi_extend(imgs, mask, extend=10):
     maskn = mask[posx_min:posx_max, posy_min:posy_max]
     imgs_red = imgs[:,posx_min:posx_max, posy_min:posy_max]
     return np.squeeze(imgs_red), maskn
+
+
+def get_center(img):
+    """ Returns the center coordinates of img. """
+    shape = img.shape
+    center = (img.shape[0]//2,img.shape[1]//2)
+    return center

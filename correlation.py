@@ -10,7 +10,7 @@ def _spatial_correlation_fourier(fim1, fim2_star, fmask, fmask_star):
     A_num2 = np.fft.irfft2(fmask*fmask_star)
 #     A_num2 *=A_num2>0.4 # remove Fourier components that are too small
     A = A_num1 * A_num2
-    A_denom = np.fft.irfft2(fim1*fmask_star) * np.fft.irfft2(fim2_star*fmask)
+    A_denom = np.fft.irfft2(fim1*fmask_star) * np.fft.irfft2(fim2_star*fmask) # symmetric normalization
     # make sure the normalization value isn't 0 otherwise the autocorr will 'explode'
     pos = np.where(np.abs(A_denom)!=0)
     A[pos] /= A_denom[pos]
@@ -95,9 +95,13 @@ def correct_illumination(imgs, roi, kernel_size=5):
 def fit_correlation(A, rr=1, ax=None):
     xx = A.shape[0]//2
     yy = A.shape[1]//2
-    horiz = A[xx,:]
-    vert = A[:,yy]
-    data = [vert[rr:-rr], horiz[rr:-rr]]
+    if rr is None:
+        horiz = A[xx,:]
+        vert = A[:,yy]
+    else:
+        horiz = A[xx,yy-rr:yy+rr]
+        vert = A[xx-rr:xx+rr,yy]
+    data = [vert, horiz]
     titles = ['vertical', 'horizontal']
     
     if ax is None:
@@ -117,9 +121,9 @@ def fit_correlation(A, rr=1, ax=None):
         res = gmodel.fit(dat, params, x=x, method='leastsq') #, fit_kws={'ftol':1e-10, 'xtol':1e-10})
 
         xfit = np.arange(0,2*center,0.1)
-        ax[ii].plot(xfit, res.eval(x=xfit), color='b', 
+        ax[ii].plot(xfit, res.eval(x=xfit), color='purple', linewidth=2,
                     label='sigma = {:.2f} +/- {:.2f}'.format(res.params['sigma'].value, res.params['sigma'].stderr))
-        ax[ii].plot(dat, 'o', color='y')
+        ax[ii].plot(dat, 'o', color='orange')
         ax[ii].legend(loc='upper right')
         ax[ii].set_title(titles[ii])
         ax[ii].set_xlabel('Pixel')
