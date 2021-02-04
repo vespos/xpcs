@@ -104,8 +104,7 @@ class SpeckleStatistics(object):
     
     
     def fit_pk(self, k, ax=None, bin_kavg=True):
-        """ Fit the negative binomial distribution to the Pk(kave) curves.
-        """
+        """ Fit the negative binomial distribution to the Pk(kave) curves."""
         kavg = self.kavg
         kavgfilt = (kavg>=self._kavgMin)&(kavg<=self._kavgMax)
         kavg = kavg[kavgfilt]

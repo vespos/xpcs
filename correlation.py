@@ -92,7 +92,15 @@ def correct_illumination(imgs, roi, kernel_size=5):
     return imgs_corr, roi, bp
 
 
-def fit_correlation(A, rr=1, ax=None):
+def fit_correlation(A, rr=None, ax=None):
+    """ Fit a Gaussian + a constant to the horizontal and vertical cental 
+    lineout cut of A. 
+    
+    Args:
+        A: autocorrelation image
+        rr: +/- number of pixel around the central point to consider. If None the entire 
+            lineout is fitted
+    """
     xx = A.shape[0]//2
     yy = A.shape[1]//2
     if rr is None:
@@ -133,3 +141,4 @@ def fit_correlation(A, rr=1, ax=None):
 
     plt.tight_layout()
     plt.show()
+    return res
